@@ -21,12 +21,12 @@ export function MacroBar({
   return (
     <div>
       <div className="flex justify-between text-sm mb-1">
-        <span className="font-medium text-gray-700">{label}</span>
-        <span className={done ? 'text-emerald-600 font-semibold' : 'text-gray-500'}>
+        <span className="font-medium text-gray-700 dark:text-gray-300">{label}</span>
+        <span className={done ? 'text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-gray-500 dark:text-gray-400'}>
           {consumed}{unit} / {target}{unit}
         </span>
       </div>
-      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+      <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
         <div
           className={`h-full rounded-full transition-all duration-500 ${done ? 'bg-emerald-500' : colorClass}`}
           style={{ width: `${pct}%` }}

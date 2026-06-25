@@ -8,11 +8,11 @@ import { useProfileStore } from '@/store/profileStore'
 
 const ProgressLineChart = dynamic(
   () => import('@/components/charts/ProgressCharts').then((m) => ({ default: m.ProgressLineChart })),
-  { ssr: false, loading: () => <div className="h-[220px] animate-pulse bg-gray-100 rounded-lg" /> }
+  { ssr: false, loading: () => <div className="h-[220px] animate-pulse bg-gray-100 dark:bg-gray-700 rounded-lg" /> }
 )
 const WorkoutsBarChart = dynamic(
   () => import('@/components/charts/ProgressCharts').then((m) => ({ default: m.WorkoutsBarChart })),
-  { ssr: false, loading: () => <div className="h-[180px] animate-pulse bg-gray-100 rounded-lg" /> }
+  { ssr: false, loading: () => <div className="h-[180px] animate-pulse bg-gray-100 dark:bg-gray-700 rounded-lg" /> }
 )
 
 export default function ProgressPage() {
@@ -35,7 +35,6 @@ export default function ProgressPage() {
   const yMin = Math.max((sorted[0]?.weightLbs ?? profile.currentWeight) - 3, 80)
   const yMax = Math.max(latestWeight, profile.goalWeight) + 3
 
-  // Workouts per week chart (last 8 weeks)
   const completedSessions = sessions.filter((s) => s.completed).sort((a, b) => a.date.localeCompare(b.date))
   const weeklyWorkouts = buildWeeklyWorkouts(completedSessions)
 
@@ -45,7 +44,7 @@ export default function ProgressPage() {
 
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-5">
-      <h1 className="text-xl font-bold text-gray-900">Progress</h1>
+      <h1 className="text-xl font-bold text-gray-900 dark:text-white">Progress</h1>
 
       {/* Stats row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -56,30 +55,30 @@ export default function ProgressPage() {
       </div>
 
       {/* Goal progress */}
-      <div className="bg-white rounded-xl shadow-sm p-5">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5">
         <div className="flex items-center justify-between mb-2">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Goal Progress</p>
-          <span className="text-sm font-bold text-gray-900">{goalPct.toFixed(0)}%</span>
+          <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide">Goal Progress</p>
+          <span className="text-sm font-bold text-gray-900 dark:text-white">{goalPct.toFixed(0)}%</span>
         </div>
-        <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+        <div className="h-3 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
           <div
             className="h-full bg-emerald-500 rounded-full transition-all duration-700"
             style={{ width: `${Math.max(goalPct, 2)}%` }}
           />
         </div>
-        <div className="flex justify-between mt-2 text-xs text-gray-400">
+        <div className="flex justify-between mt-2 text-xs text-gray-400 dark:text-gray-500">
           <span>Start: {profile.currentWeight} lbs</span>
           <span>Goal: {profile.goalWeight} lbs</span>
         </div>
       </div>
 
       {/* Weight trend chart */}
-      <div className="bg-white rounded-xl shadow-sm p-5">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">Weight Trend</p>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5">
+        <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-4">Weight Trend</p>
         {weightChartData.length >= 2 ? (
           <ProgressLineChart data={weightChartData} goalWeight={profile.goalWeight} yMin={yMin} yMax={yMax} />
         ) : (
-          <div className="h-40 flex items-center justify-center text-sm text-gray-400">
+          <div className="h-40 flex items-center justify-center text-sm text-gray-400 dark:text-gray-500">
             Log at least 2 weight entries to see your trend.
           </div>
         )}
@@ -87,8 +86,8 @@ export default function ProgressPage() {
 
       {/* Workouts per week chart */}
       {weeklyWorkouts.length > 0 && (
-        <div className="bg-white rounded-xl shadow-sm p-5">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">Workouts Per Week</p>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5">
+          <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-4">Workouts Per Week</p>
           <WorkoutsBarChart data={weeklyWorkouts} />
         </div>
       )}
@@ -98,10 +97,10 @@ export default function ProgressPage() {
 
 function StatCard({ label, value, unit }: { label: string; value: string; unit: string }) {
   return (
-    <div className="bg-white rounded-xl shadow-sm p-4 text-center">
-      <p className="text-xs text-gray-400">{label}</p>
-      <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
-      <p className="text-xs text-gray-400">{unit}</p>
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 text-center">
+      <p className="text-xs text-gray-400 dark:text-gray-500">{label}</p>
+      <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{value}</p>
+      <p className="text-xs text-gray-400 dark:text-gray-500">{unit}</p>
     </div>
   )
 }

@@ -48,30 +48,30 @@ export default function DashboardPage() {
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-5">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">{format(today, 'EEEE, MMMM d')}</h1>
-        <p className="text-sm text-gray-400 mt-0.5">Here's your day at a glance.</p>
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white">{format(today, 'EEEE, MMMM d')}</h1>
+        <p className="text-sm text-gray-400 dark:text-gray-500 mt-0.5">Here&apos;s your day at a glance.</p>
       </div>
 
       {/* Calories + Workout */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="bg-white rounded-xl shadow-sm p-5 flex items-center gap-5">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5 flex items-center gap-5">
           <MacroRing consumed={macros.kcal} target={profile.dailyCalorieTarget} />
           <div className="flex-1 space-y-2.5 min-w-0">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Today's Calories</p>
+            <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide">Today&apos;s Calories</p>
             <MacroBar label="Protein" consumed={macros.protein} target={profile.proteinTarget} colorClass="bg-blue-500" />
             <MacroBar label="Carbs" consumed={macros.carbs} target={profile.carbTarget} colorClass="bg-amber-400" />
             <MacroBar label="Fat" consumed={macros.fat} target={profile.fatTarget} colorClass="bg-rose-400" />
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-5">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Today's Workout</p>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5">
+          <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-3">Today&apos;s Workout</p>
           {!todaySchedule || todaySchedule === 'rest' ? (
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-full bg-gray-100 flex items-center justify-center text-2xl">😴</div>
+              <div className="w-11 h-11 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-2xl">😴</div>
               <div>
-                <p className="font-semibold text-gray-900">Rest Day</p>
-                <p className="text-xs text-gray-400 mt-0.5">Recovery is where muscle is built.</p>
+                <p className="font-semibold text-gray-900 dark:text-white">Rest Day</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Recovery is where muscle is built.</p>
               </div>
             </div>
           ) : (
@@ -80,13 +80,13 @@ export default function DashboardPage() {
                 {todaySchedule}
               </div>
               <div>
-                <p className="font-semibold text-gray-900">Workout {todaySchedule}</p>
-                <p className="text-xs text-gray-400 mt-0.5">
+                <p className="font-semibold text-gray-900 dark:text-white">Workout {todaySchedule}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
                   {todaySession?.completed ? '✅ Completed today' : '7 exercises · Tap to log'}
                 </p>
               </div>
               {!todaySession?.completed && (
-                <Link href="/workouts" className="ml-auto text-xs text-indigo-600 font-medium hover:text-indigo-700">
+                <Link href="/workouts" className="ml-auto text-xs text-indigo-600 dark:text-indigo-400 font-medium hover:text-indigo-700 dark:hover:text-indigo-300">
                   Log →
                 </Link>
               )}
@@ -96,25 +96,25 @@ export default function DashboardPage() {
       </div>
 
       {/* Today's Meals */}
-      <div className="bg-white rounded-xl shadow-sm p-5">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5">
         <div className="flex items-center justify-between mb-3">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Today's Meals</p>
-          <Link href="/meals" className="text-xs text-indigo-600 font-medium hover:text-indigo-700">Edit plan →</Link>
+          <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide">Today&apos;s Meals</p>
+          <Link href="/meals" className="text-xs text-indigo-600 dark:text-indigo-400 font-medium hover:text-indigo-700 dark:hover:text-indigo-300">Edit plan →</Link>
         </div>
         <div className="space-y-0">
           {(Object.keys(SLOT_LABELS) as MealSlotType[]).map((slot) => {
             const mealId = todayMeals?.[slot]
             const meal = mealId ? mealLibrary.find((m) => m.id === mealId) : null
             return (
-              <div key={slot} className="flex items-center py-2 border-b border-gray-50 last:border-0">
-                <span className="text-xs text-gray-400 w-20 shrink-0">{SLOT_LABELS[slot]}</span>
+              <div key={slot} className="flex items-center py-2 border-b border-gray-50 dark:border-gray-700 last:border-0">
+                <span className="text-xs text-gray-400 dark:text-gray-500 w-20 shrink-0">{SLOT_LABELS[slot]}</span>
                 {meal ? (
                   <>
-                    <span className="text-sm font-medium text-gray-900 flex-1 truncate">{meal.name}</span>
-                    <span className="text-xs text-gray-400 ml-2 shrink-0">{meal.kcal} kcal</span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100 flex-1 truncate">{meal.name}</span>
+                    <span className="text-xs text-gray-400 dark:text-gray-500 ml-2 shrink-0">{meal.kcal} kcal</span>
                   </>
                 ) : (
-                  <span className="text-sm text-gray-300 italic">Not planned</span>
+                  <span className="text-sm text-gray-300 dark:text-gray-600 italic">Not planned</span>
                 )}
               </div>
             )
@@ -123,19 +123,19 @@ export default function DashboardPage() {
       </div>
 
       {/* Goal Progress */}
-      <div className="bg-white rounded-xl shadow-sm p-5">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Progress to Goal</p>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5">
+        <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-3">Progress to Goal</p>
         <div className="flex items-center justify-between text-sm mb-2">
-          <span className="font-bold text-gray-900">{currentLbs} lbs</span>
-          <span className="text-gray-400">Goal: {profile.goalWeight} lbs</span>
+          <span className="font-bold text-gray-900 dark:text-white">{currentLbs} lbs</span>
+          <span className="text-gray-400 dark:text-gray-500">Goal: {profile.goalWeight} lbs</span>
         </div>
-        <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+        <div className="h-2.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
           <div
             className="h-full bg-emerald-500 rounded-full transition-all duration-700"
             style={{ width: `${Math.max(goalPct, 2)}%` }}
           />
         </div>
-        <div className="flex justify-between mt-2 text-xs text-gray-400">
+        <div className="flex justify-between mt-2 text-xs text-gray-400 dark:text-gray-500">
           <span>Started at {profile.currentWeight} lbs</span>
           <span>{lbsToGo > 0 ? `${lbsToGo.toFixed(1)} lbs to go` : '🎉 Goal reached!'}</span>
         </div>

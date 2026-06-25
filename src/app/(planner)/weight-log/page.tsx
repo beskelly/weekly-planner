@@ -8,7 +8,7 @@ import { useProfileStore } from '@/store/profileStore'
 
 const WeightChart = dynamic(() => import('@/components/charts/WeightChart'), {
   ssr: false,
-  loading: () => <div className="h-[240px] animate-pulse bg-gray-100 rounded-lg" />,
+  loading: () => <div className="h-[240px] animate-pulse bg-gray-100 dark:bg-gray-700 rounded-lg" />,
 })
 
 export default function WeightLogPage() {
@@ -40,25 +40,25 @@ export default function WeightLogPage() {
 
   return (
     <div className="p-6 max-w-2xl mx-auto space-y-5">
-      <h1 className="text-xl font-bold text-gray-900">Weight Log</h1>
+      <h1 className="text-xl font-bold text-gray-900 dark:text-white">Weight Log</h1>
 
       {/* Input */}
-      <div className="bg-white rounded-xl shadow-sm p-5">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Log Today's Weight</p>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5">
+        <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-3">Log Today&apos;s Weight</p>
         <div className="flex flex-wrap gap-3 items-end">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date</label>
             <input type="date" value={date} onChange={(e) => setDate(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+              className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Weight (lbs)</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Weight (lbs)</label>
             <input
               type="number" min={50} max={500} step={0.1}
               value={weight} placeholder="e.g. 131.5"
               onChange={(e) => setWeight(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleLog()}
-              className="w-28 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-28 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
           <button onClick={handleLog}
@@ -76,12 +76,12 @@ export default function WeightLogPage() {
       </div>
 
       {/* Chart */}
-      <div className="bg-white rounded-xl shadow-sm p-5">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">Weight Over Time</p>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5">
+        <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-4">Weight Over Time</p>
         {chartData.length >= 2 ? (
           <WeightChart data={chartData} goalWeight={profile.goalWeight} yMin={yMin} yMax={yMax} />
         ) : (
-          <div className="h-40 flex items-center justify-center text-sm text-gray-400">
+          <div className="h-40 flex items-center justify-center text-sm text-gray-400 dark:text-gray-500">
             Log at least 2 entries to see your weight chart.
           </div>
         )}
@@ -94,19 +94,19 @@ export default function WeightLogPage() {
 
       {/* Recent entries */}
       {sorted.length > 0 && (
-        <div className="bg-white rounded-xl shadow-sm p-5">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-5">
+          <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-3">
             Recent Entries ({sorted.length} total, {totalGained > 0 ? `+${totalGained}` : totalGained} lbs total)
           </p>
           <div className="space-y-0">
             {[...sorted].reverse().slice(0, 12).map((entry) => (
-              <div key={entry.date} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
-                <span className="text-sm text-gray-600">{format(parseISO(entry.date), 'EEE, MMM d, yyyy')}</span>
+              <div key={entry.date} className="flex items-center justify-between py-2 border-b border-gray-50 dark:border-gray-700 last:border-0">
+                <span className="text-sm text-gray-600 dark:text-gray-400">{format(parseISO(entry.date), 'EEE, MMM d, yyyy')}</span>
                 <div className="flex items-center gap-4">
-                  <span className="text-sm font-semibold text-gray-900">{entry.weightLbs} lbs</span>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">{entry.weightLbs} lbs</span>
                   <button onClick={() => removeEntry(entry.date)}
                     aria-label="Remove entry"
-                    className="text-gray-300 hover:text-red-400 transition-colors text-sm">
+                    className="text-gray-300 dark:text-gray-600 hover:text-red-400 transition-colors text-sm">
                     ✕
                   </button>
                 </div>
@@ -121,10 +121,10 @@ export default function WeightLogPage() {
 
 function StatCard({ label, value, unit, accent }: { label: string; value: string; unit: string; accent?: boolean }) {
   return (
-    <div className="bg-white rounded-xl shadow-sm p-4 text-center">
-      <p className="text-xs text-gray-400">{label}</p>
-      <p className={`text-2xl font-bold mt-1 ${accent ? 'text-emerald-600' : 'text-gray-900'}`}>{value}</p>
-      <p className="text-xs text-gray-400">{unit}</p>
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 text-center">
+      <p className="text-xs text-gray-400 dark:text-gray-500">{label}</p>
+      <p className={`text-2xl font-bold mt-1 ${accent ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-900 dark:text-white'}`}>{value}</p>
+      <p className="text-xs text-gray-400 dark:text-gray-500">{unit}</p>
     </div>
   )
 }
@@ -139,13 +139,13 @@ function PaceCard({ entries }: { entries: number[] }) {
   let status: string
   let color: string
   if (lbsPerWeek >= 0.5 && lbsPerWeek <= 1) {
-    status = 'On track (0.5–1 lb/week)'; color = 'text-emerald-600 bg-emerald-50'
+    status = 'On track (0.5–1 lb/week)'; color = 'text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 dark:text-emerald-400'
   } else if (lbsPerWeek < 0.5 && lbsPerWeek >= 0) {
-    status = 'Gaining slowly — check calories'; color = 'text-amber-600 bg-amber-50'
+    status = 'Gaining slowly — check calories'; color = 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 dark:text-amber-400'
   } else if (lbsPerWeek > 1) {
-    status = 'Gaining faster than target'; color = 'text-blue-600 bg-blue-50'
+    status = 'Gaining faster than target'; color = 'text-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:text-blue-400'
   } else {
-    status = 'Losing weight — increase calories'; color = 'text-red-600 bg-red-50'
+    status = 'Losing weight — increase calories'; color = 'text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-400'
   }
 
   return (

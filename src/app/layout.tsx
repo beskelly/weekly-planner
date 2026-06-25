@@ -12,7 +12,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${geist.variable} h-full`}>
-      <body className="h-full bg-gray-50 antialiased">{children}</body>
+      <head>
+        {/* Apply dark class synchronously before first paint to avoid flash */}
+        <script dangerouslySetInnerHTML={{ __html: `try{if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}` }} />
+      </head>
+      <body className="h-full bg-gray-50 dark:bg-gray-950 antialiased text-gray-900 dark:text-gray-100 transition-colors duration-200">
+        {children}
+      </body>
     </html>
   )
 }

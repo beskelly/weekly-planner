@@ -34,16 +34,16 @@ export default function WorkoutsPage() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-5">
-      <h1 className="text-xl font-bold text-gray-900">Workouts</h1>
+      <h1 className="text-xl font-bold text-gray-900 dark:text-white">Workouts</h1>
 
       <div className="flex items-center gap-3">
-        <button onClick={prev} aria-label="Previous week" className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-600 font-medium">←</button>
-        <span className="text-sm font-medium text-gray-700 min-w-[180px] text-center">{weekLabel}</span>
-        <button onClick={next} aria-label="Next week" className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-600 font-medium">→</button>
+        <button onClick={prev} aria-label="Previous week" className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-gray-600 dark:text-gray-400 font-medium">←</button>
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-300 min-w-[180px] text-center">{weekLabel}</span>
+        <button onClick={next} aria-label="Next week" className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-gray-600 dark:text-gray-400 font-medium">→</button>
       </div>
 
       {/* Week grid */}
-      <div className="bg-white rounded-xl shadow-sm p-4 overflow-x-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 overflow-x-auto">
         <div className="grid grid-cols-7 gap-2 min-w-[400px]">
           {WEEK_DAY_KEYS.map((day, i) => {
             const date = weekDates[i]
@@ -61,14 +61,14 @@ export default function WorkoutsPage() {
                 onClick={() => !isRest && handleDayClick(dateStr, daySchedule as WorkoutType)}
                 className={`rounded-xl p-3 text-center transition-colors ${
                   isRest
-                    ? 'bg-gray-50 cursor-default'
+                    ? 'bg-gray-50 dark:bg-gray-700/50 cursor-default'
                     : isActive
-                    ? 'bg-indigo-100 ring-2 ring-indigo-400'
-                    : 'bg-indigo-50 hover:bg-indigo-100 cursor-pointer'
-                } ${isToday ? 'ring-2 ring-offset-1 ring-indigo-300' : ''}`}
+                    ? 'bg-indigo-100 dark:bg-indigo-900/40 ring-2 ring-indigo-400'
+                    : 'bg-indigo-50 dark:bg-indigo-900/20 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 cursor-pointer'
+                } ${isToday ? 'ring-2 ring-offset-1 ring-indigo-300 dark:ring-offset-gray-800' : ''}`}
               >
-                <p className="text-xs font-semibold text-gray-600">{WEEK_DAY_LABELS[day]}</p>
-                <p className="text-xs text-gray-400 mt-0.5">{format(date, 'd')}</p>
+                <p className="text-xs font-semibold text-gray-600 dark:text-gray-400">{WEEK_DAY_LABELS[day]}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{format(date, 'd')}</p>
                 <div className="mt-2 flex justify-center">
                   {isRest ? (
                     <span className="text-lg" title="Rest day">😴</span>
@@ -80,22 +80,22 @@ export default function WorkoutsPage() {
                     </div>
                   )}
                 </div>
-                {isToday && <p className="text-xs text-indigo-500 font-medium mt-1">Today</p>}
+                {isToday && <p className="text-xs text-indigo-500 dark:text-indigo-400 font-medium mt-1">Today</p>}
               </button>
             )
           })}
         </div>
 
-        <div className="flex items-center gap-4 mt-4 pt-3 border-t border-gray-100">
-          <div className="flex items-center gap-1.5 text-xs text-gray-500">
+        <div className="flex items-center gap-4 mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
+          <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
             <div className="w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center text-white text-xs font-bold">A</div>
             Upper body / compound push
           </div>
-          <div className="flex items-center gap-1.5 text-xs text-gray-500">
+          <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
             <div className="w-5 h-5 rounded-full bg-violet-500 flex items-center justify-center text-white text-xs font-bold">B</div>
             Lower body / pull
           </div>
-          <div className="flex items-center gap-1.5 text-xs text-gray-500">
+          <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
             <span className="text-base">😴</span> Rest
           </div>
         </div>

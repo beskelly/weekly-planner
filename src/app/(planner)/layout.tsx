@@ -20,7 +20,7 @@ export default function PlannerLayout({ children }: { children: React.ReactNode 
   if (!ready) {
     return (
       <div className="min-h-full flex items-center justify-center">
-        <div className="text-gray-400 text-sm">Loading…</div>
+        <div className="text-gray-400 dark:text-gray-600 text-sm">Loading…</div>
       </div>
     )
   }
