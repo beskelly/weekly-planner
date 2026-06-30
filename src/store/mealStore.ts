@@ -129,15 +129,16 @@ export const useMealStore = create<MealState>()(
     {
       name: 'wp:meals',
       storage: createJSONStorage(() => localStorage),
-      version: 2,
-      migrate: (persistedState: unknown, version: number) => {
+      version: 3,
+      migrate: (persistedState: unknown, _version: number) => {
         const state = persistedState as MealState
-        if (version < 2) {
-          const existingIds = new Set(state.mealLibrary.map((m) => m.id))
-          const newMeals = DEFAULT_MEALS.filter((m) => !existingIds.has(m.id))
-          return { ...state, mealLibrary: [...state.mealLibrary, ...newMeals] }
-        }
-        return state
+        // Refresh all non-custom meals with latest DEFAULT_MEALS data (picks up new fields like ingredients).
+        // Custom meals are preserved as-is. Any brand-new default meals are appended.
+        const defaultMap = new Map(DEFAULT_MEALS.map((m) => [m.id, m]))
+        const refreshed = state.mealLibrary.map((m) => (m.isCustom ? m : (defaultMap.get(m.id) ?? m)))
+        const refreshedIds = new Set(refreshed.map((m) => m.id))
+        const added = DEFAULT_MEALS.filter((m) => !refreshedIds.has(m.id))
+        return { ...state, mealLibrary: [...refreshed, ...added] }
       },
     }
   )
