@@ -46,12 +46,22 @@ export function MealDetail({ meal, day, slot, onRemove, onClose }: Props) {
           >×</button>
         </div>
 
-        {/* Description */}
-        {meal.description && (
+        {/* Ingredients */}
+        {meal.ingredients && meal.ingredients.length > 0 ? (
+          <ul className="px-5 pb-4 space-y-1.5">
+            {meal.ingredients.map((ing) => (
+              <li key={ing.item} className="flex items-baseline gap-2 text-sm">
+                <span className="text-gray-300 dark:text-gray-600 shrink-0 select-none">·</span>
+                <span className="font-medium text-indigo-600 dark:text-indigo-400 shrink-0 min-w-[56px]">{ing.quantity}</span>
+                <span className="text-gray-700 dark:text-gray-300">{ing.item}</span>
+              </li>
+            ))}
+          </ul>
+        ) : meal.description ? (
           <p className="px-5 pb-4 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
             {meal.description}
           </p>
-        )}
+        ) : null}
 
         {/* Macros */}
         <div className="mx-5 mb-5 grid grid-cols-4 gap-2">
