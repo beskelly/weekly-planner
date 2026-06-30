@@ -9,7 +9,7 @@ import { MealPicker } from '@/components/meals/MealPicker'
 import { CustomMealForm } from '@/components/meals/CustomMealForm'
 import { ShoppingList } from '@/components/meals/ShoppingList'
 import { MealDetail } from '@/components/meals/MealDetail'
-import { currentWeekStart, weekDatesFromStart, WEEK_DAY_KEYS, WEEK_DAY_LABELS } from '@/lib/utils'
+import { currentWeekStart, weekDatesFromStart, dateToWeekDayKey, WEEK_DAY_KEYS, WEEK_DAY_LABELS } from '@/lib/utils'
 import type { Meal, MealSlotType, WeekDayKey, WeeklyMealPlan } from '@/types'
 
 const SLOTS: { key: MealSlotType; label: string; workoutTime: string; restTime: string }[] = [
@@ -70,9 +70,7 @@ export default function MealsPage() {
     [weekPlan, mealLibrary]
   )
 
-  const todayStr = format(new Date(), 'yyyy-MM-dd')
-  const todayIndex = weekDates.findIndex((d) => format(d, 'yyyy-MM-dd') === todayStr)
-  const todayDayKey = todayIndex >= 0 ? WEEK_DAY_KEYS[todayIndex] : null
+  const todayDayKey = weekStart === currentWeekStart() ? dateToWeekDayKey(new Date()) : null
 
   const prev = () => setWeekStart(format(subWeeks(weekDates[0], 1), 'yyyy-MM-dd'))
   const next = () => setWeekStart(format(addWeeks(weekDates[0], 1), 'yyyy-MM-dd'))
