@@ -70,6 +70,10 @@ export default function MealsPage() {
     [weekPlan, mealLibrary]
   )
 
+  const todayStr = format(new Date(), 'yyyy-MM-dd')
+  const todayIndex = weekDates.findIndex((d) => format(d, 'yyyy-MM-dd') === todayStr)
+  const todayDayKey = todayIndex >= 0 ? WEEK_DAY_KEYS[todayIndex] : null
+
   const prev = () => setWeekStart(format(subWeeks(weekDates[0], 1), 'yyyy-MM-dd'))
   const next = () => setWeekStart(format(addWeeks(weekDates[0], 1), 'yyyy-MM-dd'))
 
@@ -110,9 +114,14 @@ export default function MealsPage() {
           <thead>
             <tr>
               <th className="w-28 p-3 text-left"></th>
-              {WEEK_DAY_KEYS.map((day, i) => (
-                <th key={day} className="p-2 text-center min-w-[130px]">
-                  <div className="text-xs font-semibold text-gray-800 dark:text-gray-200">{WEEK_DAY_LABELS[day]}</div>
+              {WEEK_DAY_KEYS.map((day, i) => {
+                const isToday = day === todayDayKey
+                return (
+                <th key={day} className={`p-2 text-center min-w-[130px] ${isToday ? 'bg-indigo-50 dark:bg-indigo-900/20' : ''}`}>
+                  {isToday && (
+                    <div className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mb-0.5">Today</div>
+                  )}
+                  <div className={`text-xs font-semibold ${isToday ? 'text-indigo-700 dark:text-indigo-300' : 'text-gray-800 dark:text-gray-200'}`}>{WEEK_DAY_LABELS[day]}</div>
                   <div className="text-xs text-gray-400 dark:text-gray-500">{format(weekDates[i], 'MMM d')}</div>
                   <div className="mt-1">
                     {schedule[i] === 'rest'
@@ -135,7 +144,7 @@ export default function MealsPage() {
                     </select>
                   </div>
                 </th>
-              ))}
+                )})}
             </tr>
           </thead>
           <tbody>
@@ -153,10 +162,11 @@ export default function MealsPage() {
                   )}
                 </td>
                 {WEEK_DAY_KEYS.map((day) => {
+                  const isToday = day === todayDayKey
                   const mealId = weekPlan?.days[day]?.[slot] ?? null
                   const meal = mealId ? mealLibrary.find((m) => m.id === mealId) : null
                   return (
-                    <td key={day} className="p-1.5">
+                    <td key={day} className={`p-1.5 ${isToday ? 'bg-indigo-50/60 dark:bg-indigo-900/10' : ''}`}>
                       {meal ? (
                         <div
                           role="button" tabIndex={0}
@@ -190,11 +200,12 @@ export default function MealsPage() {
             <tr className="border-t-2 border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
               <td className="p-3 text-xs font-semibold text-gray-500 dark:text-gray-400">Totals</td>
               {WEEK_DAY_KEYS.map((day) => {
+                const isToday = day === todayDayKey
                 const { kcal, protein } = dayTotals[day]
                 const calOk = kcal >= profile.dailyCalorieTarget * 0.9
                 const proOk = protein >= profile.proteinTarget * 0.9
                 return (
-                  <td key={day} className="p-2 text-center">
+                  <td key={day} className={`p-2 text-center ${isToday ? 'bg-indigo-50/60 dark:bg-indigo-900/10' : ''}`}>
                     <p className={`text-xs font-semibold ${calOk ? 'text-emerald-600 dark:text-emerald-400' : kcal > 0 ? 'text-amber-500' : 'text-gray-300 dark:text-gray-600'}`}>
                       {kcal > 0 ? `${kcal} kcal` : '—'}
                     </p>
