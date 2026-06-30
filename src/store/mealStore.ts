@@ -129,6 +129,16 @@ export const useMealStore = create<MealState>()(
     {
       name: 'wp:meals',
       storage: createJSONStorage(() => localStorage),
+      version: 2,
+      migrate: (persistedState: unknown, version: number) => {
+        const state = persistedState as MealState
+        if (version < 2) {
+          const existingIds = new Set(state.mealLibrary.map((m) => m.id))
+          const newMeals = DEFAULT_MEALS.filter((m) => !existingIds.has(m.id))
+          return { ...state, mealLibrary: [...state.mealLibrary, ...newMeals] }
+        }
+        return state
+      },
     }
   )
 )
