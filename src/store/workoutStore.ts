@@ -49,7 +49,24 @@ export const useWorkoutStore = create<WorkoutState>()(
 
       getOrCreateSession: (date, workoutType) => {
         const existing = get().sessions.find((s) => s.date === date)
-        if (existing) return existing
+        const expectedIds = EXERCISES.filter((e) => e.workout === workoutType)
+          .map((e) => e.id)
+          .sort()
+          .join(',')
+
+        if (existing) {
+          const existingIds = existing.exercises.map((e) => e.exerciseId).sort().join(',')
+          if (existingIds === expectedIds) return existing
+          // Exercise list has changed since this session was created (e.g. plan was
+          // rebuilt) — the old logged sets reference exercises that no longer exist,
+          // so rebuild the session fresh instead of showing stale/missing exercises.
+          const rebuilt = buildEmptySession(date, workoutType)
+          set((state) => ({
+            sessions: state.sessions.map((s) => (s.id === existing.id ? rebuilt : s)),
+          }))
+          return rebuilt
+        }
+
         const fresh = buildEmptySession(date, workoutType)
         set((state) => ({ sessions: [...state.sessions, fresh] }))
         return fresh
