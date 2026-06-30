@@ -89,11 +89,11 @@ export default function WorkoutsPage() {
         <div className="flex items-center gap-4 mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
           <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
             <div className="w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center text-white text-xs font-bold">A</div>
-            Upper body / compound push
+            Goblet squat · chest press · row · curls
           </div>
           <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
             <div className="w-5 h-5 rounded-full bg-violet-500 flex items-center justify-center text-white text-xs font-bold">B</div>
-            Lower body / pull
+            Deadlift · split squat · pulldown · dips
           </div>
           <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
             <span className="text-base">😴</span> Rest
