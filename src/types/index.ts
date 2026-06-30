@@ -6,6 +6,14 @@ export type WorkoutType = 'A' | 'B'
 
 // ─── Meals ───────────────────────────────────────────────────────────────────
 
+export type ShoppingCategory = 'Protein' | 'Produce' | 'Grains & Carbs' | 'Pantry' | 'Dairy-alt'
+
+export interface Ingredient {
+  item: string            // canonical name used for aggregation, e.g. "chicken thigh"
+  quantity: string        // e.g. "6 oz" or "1.5 cups" or "2 tbsp"
+  category: ShoppingCategory
+}
+
 export interface Meal {
   id: string
   name: string
@@ -16,6 +24,7 @@ export interface Meal {
   fat: number
   suitableFor: MealSlotType[]
   isCustom: boolean
+  ingredients?: Ingredient[]
 }
 
 export interface DailyMeals {

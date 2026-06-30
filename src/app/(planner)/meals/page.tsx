@@ -6,6 +6,7 @@ import { useMealStore } from '@/store/mealStore'
 import { useProfileStore } from '@/store/profileStore'
 import { MealPicker } from '@/components/meals/MealPicker'
 import { CustomMealForm } from '@/components/meals/CustomMealForm'
+import { ShoppingList } from '@/components/meals/ShoppingList'
 import { currentWeekStart, weekDatesFromStart, WEEK_DAY_KEYS, WEEK_DAY_LABELS } from '@/lib/utils'
 import type { Meal, MealSlotType, WeekDayKey, WeeklyMealPlan } from '@/types'
 
@@ -38,6 +39,7 @@ export default function MealsPage() {
   const [weekStart, setWeekStart] = useState(currentWeekStart())
   const [pickerTarget, setPickerTarget] = useState<PickerTarget | null>(null)
   const [showCustomForm, setShowCustomForm] = useState(false)
+  const [showShoppingList, setShowShoppingList] = useState(false)
 
   const weeklyPlans = useMealStore((s) => s.weeklyPlans)
   const mealLibrary = useMealStore((s) => s.mealLibrary)
@@ -61,16 +63,30 @@ export default function MealsPage() {
   const prev = () => setWeekStart(format(subWeeks(weekDates[0], 1), 'yyyy-MM-dd'))
   const next = () => setWeekStart(format(addWeeks(weekDates[0], 1), 'yyyy-MM-dd'))
 
+  const plannedMealCount = weekPlan
+    ? Object.values(weekPlan.days).flatMap(Object.values).filter(Boolean).length
+    : 0
+
   return (
     <div className="p-6 space-y-5">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
         <h1 className="text-xl font-bold text-gray-900 dark:text-white">Meal Planner</h1>
-        <button
-          onClick={() => setShowCustomForm(true)}
-          className="text-sm bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-        >
-          + Custom Meal
-        </button>
+        <div className="flex items-center gap-2">
+          {plannedMealCount > 0 && (
+            <button
+              onClick={() => setShowShoppingList(true)}
+              className="text-sm border border-indigo-300 dark:border-indigo-700 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 px-3 py-2 rounded-lg font-medium transition-colors flex items-center gap-1.5"
+            >
+              🛒 Shopping List
+            </button>
+          )}
+          <button
+            onClick={() => setShowCustomForm(true)}
+            className="text-sm bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+          >
+            + Custom Meal
+          </button>
+        </div>
       </div>
 
       <div className="flex items-center gap-3">
@@ -170,6 +186,14 @@ export default function MealsPage() {
         />
       )}
       {showCustomForm && <CustomMealForm onClose={() => setShowCustomForm(false)} />}
+      {showShoppingList && weekPlan && (
+        <ShoppingList
+          weekPlan={weekPlan}
+          weekLabel={weekLabel}
+          mealLibrary={mealLibrary}
+          onClose={() => setShowShoppingList(false)}
+        />
+      )}
     </div>
   )
 }
