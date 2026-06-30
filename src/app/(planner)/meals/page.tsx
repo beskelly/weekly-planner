@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { format, addWeeks, subWeeks } from 'date-fns'
 import { useMealStore } from '@/store/mealStore'
 import { useProfileStore } from '@/store/profileStore'
+import { useWorkoutSchedule } from '@/hooks/useWorkoutSchedule'
 import { MealPicker } from '@/components/meals/MealPicker'
 import { CustomMealForm } from '@/components/meals/CustomMealForm'
 import { ShoppingList } from '@/components/meals/ShoppingList'
@@ -11,12 +12,12 @@ import { MealDetail } from '@/components/meals/MealDetail'
 import { currentWeekStart, weekDatesFromStart, WEEK_DAY_KEYS, WEEK_DAY_LABELS } from '@/lib/utils'
 import type { Meal, MealSlotType, WeekDayKey, WeeklyMealPlan } from '@/types'
 
-const SLOTS: { key: MealSlotType; label: string }[] = [
-  { key: 'breakfast', label: 'Breakfast' },
-  { key: 'lunch', label: 'Lunch' },
-  { key: 'snack', label: 'Snack' },
-  { key: 'dinner', label: 'Dinner' },
-  { key: 'preBed', label: 'Pre-bed' },
+const SLOTS: { key: MealSlotType; label: string; workoutTime: string; restTime: string }[] = [
+  { key: 'breakfast', label: 'Breakfast', workoutTime: '8:15 AM', restTime: '6:45 AM' },
+  { key: 'lunch',     label: 'Lunch',     workoutTime: '12:00 PM', restTime: '11:30 AM' },
+  { key: 'snack',     label: 'Snack',     workoutTime: '3:30 PM',  restTime: '3:00 PM' },
+  { key: 'dinner',    label: 'Dinner',    workoutTime: '6:30 PM',  restTime: '6:30 PM' },
+  { key: 'preBed',    label: 'Pre-bed',   workoutTime: '9:00 PM',  restTime: '9:00 PM' },
 ]
 
 interface PickerTarget {
@@ -60,6 +61,7 @@ export default function MealsPage() {
   useEffect(() => { getWeekPlan(weekStart) }, [weekStart, getWeekPlan])
 
   const weekDates = weekDatesFromStart(weekStart)
+  const schedule = useWorkoutSchedule(profile.workoutStartDate, weekDates)
   const weekPlan = weeklyPlans[weekStart]
   const weekLabel = `${format(weekDates[0], 'MMM d')} – ${format(weekDates[6], 'MMM d, yyyy')}`
 
@@ -107,12 +109,18 @@ export default function MealsPage() {
         <table className="min-w-full border-collapse">
           <thead>
             <tr>
-              <th className="w-24 p-3 text-left"></th>
+              <th className="w-28 p-3 text-left"></th>
               {WEEK_DAY_KEYS.map((day, i) => (
                 <th key={day} className="p-2 text-center min-w-[130px]">
                   <div className="text-xs font-semibold text-gray-800 dark:text-gray-200">{WEEK_DAY_LABELS[day]}</div>
                   <div className="text-xs text-gray-400 dark:text-gray-500">{format(weekDates[i], 'MMM d')}</div>
-                  <div className="mt-1.5">
+                  <div className="mt-1">
+                    {schedule[i] === 'rest'
+                      ? <span className="text-xs text-gray-400 dark:text-gray-500">Rest day</span>
+                      : <span className="text-xs font-medium text-indigo-500 dark:text-indigo-400">Workout {schedule[i]}</span>
+                    }
+                  </div>
+                  <div className="mt-1">
                     <select
                       defaultValue=""
                       onChange={(e) => {
@@ -131,9 +139,19 @@ export default function MealsPage() {
             </tr>
           </thead>
           <tbody>
-            {SLOTS.map(({ key: slot, label }) => (
+            {SLOTS.map(({ key: slot, label, workoutTime, restTime }) => (
               <tr key={slot} className="border-t border-gray-100 dark:border-gray-700">
-                <td className="p-3 text-xs font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap">{label}</td>
+                <td className="p-3 align-top">
+                  <div className="text-xs font-medium text-gray-500 dark:text-gray-400">{label}</div>
+                  {workoutTime === restTime ? (
+                    <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{workoutTime}</div>
+                  ) : (
+                    <div className="mt-0.5 space-y-0.5">
+                      <div className="text-xs text-indigo-500 dark:text-indigo-400">{workoutTime}</div>
+                      <div className="text-xs text-gray-400 dark:text-gray-500">{restTime}</div>
+                    </div>
+                  )}
+                </td>
                 {WEEK_DAY_KEYS.map((day) => {
                   const mealId = weekPlan?.days[day]?.[slot] ?? null
                   const meal = mealId ? mealLibrary.find((m) => m.id === mealId) : null
