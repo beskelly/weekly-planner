@@ -7,6 +7,7 @@ import { useProfileStore } from '@/store/profileStore'
 import { MealPicker } from '@/components/meals/MealPicker'
 import { CustomMealForm } from '@/components/meals/CustomMealForm'
 import { ShoppingList } from '@/components/meals/ShoppingList'
+import { MealDetail } from '@/components/meals/MealDetail'
 import { currentWeekStart, weekDatesFromStart, WEEK_DAY_KEYS, WEEK_DAY_LABELS } from '@/lib/utils'
 import type { Meal, MealSlotType, WeekDayKey, WeeklyMealPlan } from '@/types'
 
@@ -19,6 +20,12 @@ const SLOTS: { key: MealSlotType; label: string }[] = [
 ]
 
 interface PickerTarget {
+  day: WeekDayKey
+  slot: MealSlotType
+}
+
+interface DetailTarget {
+  meal: Meal
   day: WeekDayKey
   slot: MealSlotType
 }
@@ -38,6 +45,7 @@ function computeDayTotals(plan: WeeklyMealPlan | undefined, day: WeekDayKey, lib
 export default function MealsPage() {
   const [weekStart, setWeekStart] = useState(currentWeekStart())
   const [pickerTarget, setPickerTarget] = useState<PickerTarget | null>(null)
+  const [detailTarget, setDetailTarget] = useState<DetailTarget | null>(null)
   const [showCustomForm, setShowCustomForm] = useState(false)
   const [showShoppingList, setShowShoppingList] = useState(false)
 
@@ -132,11 +140,17 @@ export default function MealsPage() {
                   return (
                     <td key={day} className="p-1.5">
                       {meal ? (
-                        <div className="group relative rounded-lg bg-indigo-50 dark:bg-indigo-900/20 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 transition-colors p-2 cursor-default">
-                          <p className="text-xs font-medium text-indigo-900 dark:text-indigo-100 leading-snug">{meal.name}</p>
+                        <div
+                          role="button" tabIndex={0}
+                          onClick={() => setDetailTarget({ meal, day, slot })}
+                          onKeyDown={(e) => e.key === 'Enter' && setDetailTarget({ meal, day, slot })}
+                          className="group relative rounded-lg bg-indigo-50 dark:bg-indigo-900/20 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 transition-colors p-2 cursor-pointer"
+                          aria-label={`View details for ${meal.name}`}
+                        >
+                          <p className="text-xs font-medium text-indigo-900 dark:text-indigo-100 leading-snug pr-4">{meal.name}</p>
                           <p className="text-xs text-indigo-400 dark:text-indigo-500 mt-0.5">{meal.kcal} kcal · {meal.protein}g P</p>
                           <button
-                            onClick={() => setMealSlot(weekStart, day, slot, null)}
+                            onClick={(e) => { e.stopPropagation(); setMealSlot(weekStart, day, slot, null) }}
                             className="absolute top-1 right-1.5 text-indigo-300 dark:text-indigo-600 hover:text-indigo-600 dark:hover:text-indigo-300 opacity-0 group-hover:opacity-100 transition-opacity text-sm leading-none"
                             aria-label={`Remove ${label} from ${WEEK_DAY_LABELS[day]}`}
                           >×</button>
@@ -186,6 +200,15 @@ export default function MealsPage() {
         />
       )}
       {showCustomForm && <CustomMealForm onClose={() => setShowCustomForm(false)} />}
+      {detailTarget && (
+        <MealDetail
+          meal={detailTarget.meal}
+          day={detailTarget.day}
+          slot={detailTarget.slot}
+          onRemove={() => setMealSlot(weekStart, detailTarget.day, detailTarget.slot, null)}
+          onClose={() => setDetailTarget(null)}
+        />
+      )}
       {showShoppingList && weekPlan && (
         <ShoppingList
           weekPlan={weekPlan}
